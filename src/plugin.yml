@@ -1,0 +1,22 @@
+name: resfly
+main: me.kolorafa.resfly.resfly
+version: 1.5
+description: Allow to fly on residence with fly flag
+author: kolorafa
+depend: [ Residence ]
+permissions:
+    resfly.ignore:
+        description: Disables changing fly on player, set it when someone have global fly
+        default: false
+    resfly.dontfall:
+        description: Do not disable fly leaving residence flying but enable if flag present
+        default: op
+    resfly.toggledebug:
+        description: Access debug toggle command
+        default: op
+commands:
+    resfly:
+        usage: "Usage: /resfly"
+        aliases: residencefly
+        permission: 
+        description: Toggle console debug

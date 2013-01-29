@@ -1,0 +1,27 @@
+v1.5 - 15.07.2012
+*  Fixed a infinite fly bug
+
+v1.4 - 30.06.2012
+*  Fixed residence leave bug
+
+v1.3 - 08.06.2012
+*  Added permission: resfly.dontfall
+*  Fixed: One of infinite flying bug
+
+v1.2 - 06.06.2012
+*  Player will not get damage from falling leaving residence
+*  Added max ticks time to prevent fall damage option in config, default 100 (5s)
+*  Added /resfly command to toggle console debug. (default to ops)
+*  Added permission: resfly.toggledebug
+*  Removed check for permission: essentials.fly
+
+v1.1 - 05.06.2012
+*  Added permission: resfly.ignore
+*  Flying is enabled and disabled on flag change.
+*  Added debug option in config, default false
+
+v1.0 - 14.05.2012
+*  Code rewrite due to subzone enter/leave bug.
+
+v0.1 - 13.05.2012
+* Initial version. 

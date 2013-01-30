@@ -1,2 +1,7 @@
+# Display debug messages in console
 debug: false
+# time in server ticks to prevent fall damage
 nodamageticks: 100
+# Subzones to inherit fly from parent zones
+# false: will use "ResidenceFlagsInherit:" from Residence config
+inheritfly: false

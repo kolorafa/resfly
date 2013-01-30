@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -31,7 +30,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.material.MaterialData;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -53,7 +52,11 @@ public class resfly extends JavaPlugin implements Listener {
             if (hasPermission) {
                 return true;
             } else {
-                return dofly(res.getParent(), player);
+            	if (getConfig().getBoolean("inheritfly")) {
+            		return dofly(res.getParent(), player);
+            	} else {
+            		return false;
+            	}
             }
         }
         return false;
@@ -88,6 +91,8 @@ public class resfly extends JavaPlugin implements Listener {
         }
     }
 
+    public static final Integer sync = new Integer(0);
+   
     public void playermove(Player player) {
         log("Executing playermove checks");
         ClaimedResidence res = Residence.getResidenceManager().getByLoc(player.getLocation());
@@ -117,6 +122,14 @@ public class resfly extends JavaPlugin implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerLogin(PlayerLoginEvent event) {
+    	Player player = event.getPlayer();
+    	log("Handle player connection");
+        ClaimedResidence res = Residence.getResidenceManager().getByLoc(player.getLocation());
+        fly(res,player);
+    }
+    
     public void fly(ClaimedResidence res, Player player) {
         if (check_perms(player)) {
             if (dofly(res, player)) {
@@ -166,6 +179,7 @@ public class resfly extends JavaPlugin implements Listener {
             // Failed to submit the stats :-(
         }
         this.getCommand("resfly").setExecutor(new CommandExecutor() {
+
             @Override
             public boolean onCommand(CommandSender cs, Command cmnd, String string, String[] strings) {
                 log("Command cs:" + cs.getName() + ", cmnd name:" + cmnd.getName() + ", cmnd perm:" + cmnd.getPermission() + ", cmnd permm:" + cmnd.getPermissionMessage() + ", cmnd label:" + cmnd.getLabel() + ", cmnd usage:" + cmnd.getUsage() + ", string:" + string);
@@ -185,7 +199,8 @@ public class resfly extends JavaPlugin implements Listener {
     }
 
     private void loadConfiguration() {
-        getConfig().options().copyDefaults(true);
+        getConfig().addDefault("inheritfly", true);
+    	getConfig().options().copyDefaults(true);
         saveConfig();
     }
     

@@ -200,7 +200,6 @@ public class resfly extends JavaPlugin implements Listener {
     }
 
     private void loadConfiguration() {
-        getConfig().addDefault("inheritfly", true);
     	getConfig().options().copyDefaults(true);
         saveConfig();
     }

@@ -5,12 +5,8 @@
 package me.kolorafa.resfly;
 
 import com.bekvon.bukkit.residence.Residence;
-import com.bekvon.bukkit.residence.event.ResidenceCreationEvent;
-import com.bekvon.bukkit.residence.event.ResidenceEnterEvent;
+import com.bekvon.bukkit.residence.event.ResidenceChangedEvent;
 import com.bekvon.bukkit.residence.event.ResidenceFlagChangeEvent;
-import com.bekvon.bukkit.residence.event.ResidenceFlagCheckEvent;
-import com.bekvon.bukkit.residence.event.ResidenceLeaveEvent;
-import com.bekvon.bukkit.residence.listeners.ResidenceBlockListener;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import com.bekvon.bukkit.residence.protection.ResidencePermissions;
@@ -18,7 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,11 +22,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -64,9 +56,9 @@ public class resfly extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void wszedles(ResidenceEnterEvent event) {
+    public void wszedles(ResidenceChangedEvent event) {
         Player player = event.getPlayer();
-        ClaimedResidence res = event.getResidence();
+        ClaimedResidence res = event.getTo();
         fly(res, player);
     }
 
@@ -87,7 +79,7 @@ public class resfly extends JavaPlugin implements Listener {
         if (event.getFlag().compareTo("fly") == 0) {
             if (event.getResidence() != null) {
                 log("Start delay");
-                getServer().getScheduler().scheduleAsyncDelayedTask(this, new delayCheck(this, event.getResidence()));
+                getServer().getScheduler().scheduleSyncDelayedTask(this, new delayCheck(this, event.getResidence()));
             }
         }
     }
@@ -101,11 +93,11 @@ public class resfly extends JavaPlugin implements Listener {
     }
     
     @EventHandler
-    public void wyszedles(ResidenceLeaveEvent event) {
+    public void wyszedles(ResidenceChangedEvent event) {
         Player player = event.getPlayer();
-        ClaimedResidence res = Residence.getResidenceManager().getByLoc(player.getLocation());
+        ClaimedResidence res = event.getFrom();
         fly(res, player);
-        getServer().getScheduler().scheduleAsyncDelayedTask(this, new delayPlayerCheck(this, event.getPlayer()), 30L);
+        getServer().getScheduler().scheduleSyncDelayedTask(this, new delayPlayerCheck(this, event.getPlayer()), 30L);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -144,7 +136,7 @@ public class resfly extends JavaPlugin implements Listener {
                         return;
                     }
                     lastfly.add(player);
-                    getServer().getScheduler().scheduleAsyncDelayedTask(this, new delayFallDamage(this, player), getConfig().getLong("nodamageticks"));
+                    getServer().getScheduler().scheduleSyncDelayedTask(this, new delayFallDamage(this, player), getConfig().getLong("nodamageticks"));
                     log("Falling down");
                     player.setFlying(false);
                 }
@@ -202,10 +194,5 @@ public class resfly extends JavaPlugin implements Listener {
     private void loadConfiguration() {
     	getConfig().options().copyDefaults(true);
         saveConfig();
-    }
-    
-    private void trash(ResidenceFlagCheckEvent event){
-        
-    }
-    
+    }    
 }

@@ -4,7 +4,6 @@
  */
 package me.kolorafa.resfly;
 
-import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import java.util.ArrayList;
 import org.bukkit.entity.Player;

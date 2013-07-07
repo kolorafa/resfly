@@ -38,28 +38,23 @@ public class resfly extends JavaPlugin implements Listener {
     PluginDescriptionFile pdffile;
 
     boolean dofly(ClaimedResidence res, Player player) {
-        if (res != null) {
+        if (res == null) {
+            FlagPermissions worldperms = Residence.getWorldFlags().getPerms(player);
+            return worldperms.has("fly", false);
+        } else {
             ResidencePermissions perms = res.getPermissions();
             boolean hasPermission = perms.playerHas(player.getName(), "fly", false);
 
             if (hasPermission) {
                 return true;
             } else {
-            	if (getConfig().getBoolean("inheritfly")) {
-            		return dofly(res.getParent(), player);
-            	} else {
-            		return false;
-            	}
+                if (getConfig().getBoolean("inheritfly")) {
+                    return dofly(res.getParent(), player);
+                } else {
+                    return false;
+                }
             }
         }
-        return false;
-    }
-
-    @EventHandler
-    public void wszedles(ResidenceChangedEvent event) {
-        Player player = event.getPlayer();
-        ClaimedResidence res = event.getTo();
-        fly(res, player);
     }
 
     public boolean check_perms(Player player) {
@@ -83,19 +78,18 @@ public class resfly extends JavaPlugin implements Listener {
             }
         }
     }
-
     public static final Integer sync = new Integer(0);
-   
+
     public void playermove(Player player) {
         log("Executing playermove checks");
         ClaimedResidence res = Residence.getResidenceManager().getByLoc(player.getLocation());
-        fly(res,player);
+        fly(res, player);
     }
-    
+
     @EventHandler
-    public void wyszedles(ResidenceChangedEvent event) {
+    public void residence_change(ResidenceChangedEvent event) {
         Player player = event.getPlayer();
-        ClaimedResidence res = event.getFrom();
+        ClaimedResidence res = event.getTo();
         fly(res, player);
         getServer().getScheduler().scheduleSyncDelayedTask(this, new delayPlayerCheck(this, event.getPlayer()), 30L);
     }
@@ -117,12 +111,12 @@ public class resfly extends JavaPlugin implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent event) {
-    	Player player = event.getPlayer();
-    	log("Handle player join");
+        Player player = event.getPlayer();
+        log("Handle player join");
         ClaimedResidence res = Residence.getResidenceManager().getByLoc(player.getLocation());
-        fly(res,player);
+        fly(res, player);
     }
-    
+
     public void fly(ClaimedResidence res, Player player) {
         if (check_perms(player)) {
             if (dofly(res, player)) {
@@ -130,9 +124,9 @@ public class resfly extends JavaPlugin implements Listener {
                 player.setAllowFlight(true);
             } else {
                 if (player.isFlying()) {
-                    log("Player flying - "+player.getPlayerListName());
+                    log("Player flying - " + player.getPlayerListName());
                     if (player.hasPermission("resfly.dontfall")) {
-                        log("found resfly.dontfall, player " + player.getPlayerListName()+ " flying, ignoring");
+                        log("found resfly.dontfall, player " + player.getPlayerListName() + " flying, ignoring");
                         return;
                     }
                     lastfly.add(player);
@@ -172,7 +166,6 @@ public class resfly extends JavaPlugin implements Listener {
             // Failed to submit the stats :-(
         }
         this.getCommand("resfly").setExecutor(new CommandExecutor() {
-
             @Override
             public boolean onCommand(CommandSender cs, Command cmnd, String string, String[] strings) {
                 log("Command cs:" + cs.getName() + ", cmnd name:" + cmnd.getName() + ", cmnd perm:" + cmnd.getPermission() + ", cmnd permm:" + cmnd.getPermissionMessage() + ", cmnd label:" + cmnd.getLabel() + ", cmnd usage:" + cmnd.getUsage() + ", string:" + string);
@@ -192,7 +185,7 @@ public class resfly extends JavaPlugin implements Listener {
     }
 
     private void loadConfiguration() {
-    	getConfig().options().copyDefaults(true);
+        getConfig().options().copyDefaults(true);
         saveConfig();
-    }    
+    }
 }

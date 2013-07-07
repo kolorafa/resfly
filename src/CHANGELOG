@@ -1,3 +1,6 @@
+v1.7 - 07.07.2013
+*  Fixed Deprecated and ConcurrentModificationException - thanks Warrows
+
 v1.6 - 1.02.2013
 *  Fixed join and inherit bug - mblanchet75
 

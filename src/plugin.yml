@@ -1,6 +1,6 @@
 name: resfly
 main: me.kolorafa.resfly.resfly
-version: 1.7
+version: 1.7.1
 description: Allow to fly on residence with fly flag
 author: kolorafa
 depend: [ Residence ]

@@ -1,5 +1,9 @@
+v1.7.1 - 08.07.2013
+*  Updated metrics
+
 v1.7 - 07.07.2013
 *  Fixed Deprecated and ConcurrentModificationException - thanks Warrows
+*  Added world flag support
 
 v1.6 - 1.02.2013
 *  Fixed join and inherit bug - mblanchet75
